@@ -160,7 +160,8 @@ core:
     image: gcr.io/neo4j-helm/restore
     imageTag: 4.2.2-1
     secretName: neo4j-gcp-credentials
-    database: neo4j,system
+    # use global.database
+    #database: neo4j,system
     cloudProvider: gcp
     bucket: gs://test-neo4j
     timestamp: "latest"
@@ -240,7 +241,8 @@ readReplica:
     image: gcr.io/neo4j-helm/restore
     imageTag: 4.1.0-1
     secretName: neo4j-gcp-credentials
-    database: neo4j,system
+    # use global.database
+    #database: neo4j,system
     cloudProvider: gcp
     bucket: gs://test-neo4j
     timestamp: "latest"
@@ -311,3 +313,6 @@ securityContext: {}
 # volume and filesystem settings local to you
 #  runAsNonRoot: true
 #  runAsUser: 7474
+
+global:
+  database: neo4j,system

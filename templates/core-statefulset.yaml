@@ -155,7 +155,7 @@ spec:
             readOnly: true
         env:
           - name: DATABASE
-            value: {{ .Values.core.restore.database }}
+            value: {{ .Values.global.database }}
           - name: CLOUD_PROVIDER
             value: {{ .Values.core.restore.cloudProvider }}
           - name: BUCKET

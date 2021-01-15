@@ -1,0 +1,73 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "{{ .Release.Name }}-job"
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/name: "graph-backup"
+    app.kubernetes.io/component: backup
+spec:
+  schedule: {{.Values.jobSchedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+        {{- with .Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+          labels:
+            {{-  range $key, $value := .Values.podLabels }}
+            {{ $key }}: "{{ $value }}"
+            {{- end }}
+        spec:
+          restartPolicy: Never
+          shareProcessNamespace: {{ .Values.shareProcessNamespace }}
+          containers:
+            - name: graph-backup
+              image: {{ .Values.image }}:{{ .Values.imageTag }}
+              imagePullPolicy: Always
+              env:
+                - name: NEO4J_ADDR
+                  value: {{ .Values.neo4jaddr }}
+                - name: DATABASE
+                  value: {{ .Values.global.database }}
+                - name: CLOUD_PROVIDER
+                  value: {{ .Values.cloudProvider }}
+                - name: BUCKET
+                  value: gs://{{ .Values.gcpProject }}-neo4j-backups
+                - name: HEAP_SIZE
+                  value: {{ .Values.heapSize }}
+                - name: PAGE_CACHE
+                  value: {{ .Values.pageCache }}
+                - name: FALLBACK_TO_FULL
+                  value: "{{ .Values.fallbackToFull }}"
+                - name: CHECK_CONSISTENCY
+                  value: "{{ .Values.checkConsistency }}"
+                - name: CHECK_INDEXES
+                  value: "{{ .Values.checkIndexes }}"
+                - name: CHECK_GRAPH
+                  value: "{{ .Values.checkGraph }}"
+                - name: CHECK_LABEL_SCAN_STORE
+                  value: "{{ .Values.checkLabelScanStore }}"
+                - name: CHECK_PROPERTY_OWNERS
+                  value: "{{ .Values.checkPropertyOwners }}"
+              volumeMounts:
+                - name: credentials
+                  mountPath: /credentials
+                  readOnly: true
+{{- if .Values.sidecarContainers }}
+{{ toYaml .Values.sidecarContainers | indent 12 }}
+{{- end }}
+          volumes:
+            - name: credentials
+              secret:
+                secretName: {{ .Values.secretName }}
+                items:
+                  - key: key.json
+                    path: credentials

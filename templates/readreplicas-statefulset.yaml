@@ -147,7 +147,7 @@ spec:
             readOnly: true
         env:
           - name: DATABASE
-            value: {{ .Values.readReplica.restore.database }}
+            value: {{ .Values.global.database }}
           - name: CLOUD_PROVIDER
             value: {{ .Values.readReplica.restore.cloudProvider }}
           - name: BUCKET

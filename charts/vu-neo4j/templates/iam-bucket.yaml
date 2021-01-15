@@ -1,0 +1,11 @@
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageBucketAccessControl
+metadata:
+  name: iam-{{ .Values.gcpProject }}-neo4j-backups
+  annotations:
+    cnrm.cloud.google.com/project-id: {{ .Values.gcpProject }}
+spec:
+  bucketRef:
+    name: {{ .Values.gcpProject }}-neo4j-backups
+  entity: user-{{ .Chart.Name }}@{{ .Values.gcpProject }}.iam.gserviceaccount.com
+  role: WRITER
