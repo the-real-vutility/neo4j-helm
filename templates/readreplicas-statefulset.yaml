@@ -151,7 +151,7 @@ spec:
           - name: CLOUD_PROVIDER
             value: {{ .Values.readReplica.restore.cloudProvider }}
           - name: BUCKET
-            value: {{ .Values.readReplica.restore.bucket }}
+            value: gs://{{ .Values.gcpProject }}-neo4j-backups
           - name: TIMESTAMP
             value: "{{ .Values.readReplica.restore.timestamp }}"
           - name: FORCE_OVERWRITE
@@ -183,9 +183,9 @@ spec:
         {{ if .Values.readReplica.restore.enabled }}
         - name: credentials
           secret:
-            secretName: {{ .Values.readReplica.restore.secretName }}
+            secretName: {{ .Values.global.bucketAccess.secretName }}
             items:
-              - key: credentials
+              - key: {{ .Values.global.bucketAccess.key }}
                 path: credentials
         {{ end }}
         {{- if not .Values.readReplica.persistentVolume.enabled }}

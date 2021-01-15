@@ -316,3 +316,6 @@ securityContext: {}
 
 global:
   database: neo4j,system
+  bucketAccess:
+    secretName: "neo4j-gcp-credentials"
+    key: key.json

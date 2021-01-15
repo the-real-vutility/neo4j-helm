@@ -67,7 +67,7 @@ spec:
           volumes:
             - name: credentials
               secret:
-                secretName: {{ .Values.secretName }}
+                secretName: {{ .Values.global.bucketAccess.secretName }}
                 items:
-                  - key: key.json
+                  - key: {{ .Values.global.bucketAccess.key }}
                     path: credentials
