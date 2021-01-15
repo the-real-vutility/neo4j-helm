@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: v2
 name: neo4j
 home: https://www.neo4j.com
 version: 4.2.2-1
