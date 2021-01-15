@@ -40,7 +40,7 @@ spec:
                 - name: CLOUD_PROVIDER
                   value: {{ .Values.cloudProvider }}
                 - name: BUCKET
-                  value: gs://{{ .Values.gcpProject }}-neo4j-backups
+                  value: gs://{{ .Values.global.gcpProject }}-neo4j-backups
                 - name: HEAP_SIZE
                   value: {{ .Values.heapSize }}
                 - name: PAGE_CACHE

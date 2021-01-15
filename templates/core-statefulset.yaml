@@ -159,7 +159,7 @@ spec:
           - name: CLOUD_PROVIDER
             value: {{ .Values.core.restore.cloudProvider }}
           - name: BUCKET
-            value: gs://{{ .Values.gcpProject }}-neo4j-backups
+            value: gs://{{ .Values.global.gcpProject }}-neo4j-backups
           - name: TIMESTAMP
             value: "{{ .Values.core.restore.timestamp }}"
           - name: FORCE_OVERWRITE
