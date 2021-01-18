@@ -241,7 +241,7 @@ readReplica:
   restore:
     enabled: false
     image: gcr.io/neo4j-helm/restore
-    imageTag: 4.1.0-1
+    imageTag: 4.2.2-1
     # use global
     #secretName: neo4j-gcp-credentials
     # use global.database
