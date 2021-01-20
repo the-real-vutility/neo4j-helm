@@ -18,7 +18,7 @@ checkIndexes: "true"
 checkGraph: "true"
 checkLabelScanStore: "true"
 checkPropertyOwners: "false"
-jobSchedule: "0 */2 * * *"
+jobSchedule: "0 */12 * * *"
 
 # When running in mesh
 shareProcessNamespace: false # Needs to be true for the below example configuration to work
