@@ -34,3 +34,4 @@ data:
   NEO4JLABS_PLUGINS: {{ .Values.plugins | toJson }}
   NEO4J_apoc_import_file_use__neo4j__config: "true"
   {{- end }}
+  NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
