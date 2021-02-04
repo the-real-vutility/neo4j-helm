@@ -1,6 +1,7 @@
 image: gcr.io/neo4j-helm/backup
 imageTag: 4.2.2-1
-podLabels: {}
+podLabels:
+  neo4j-client: "true"
 podAnnotations: {}
 neo4jaddr: neo4j-neo4j:6362
 # In case of azure the bucket is used as the container where the backup is stored
