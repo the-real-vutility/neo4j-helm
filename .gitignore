@@ -45,3 +45,5 @@ expanded.yaml
 node_modules
 doc/node
 doc/build
+notes.sh
+manifests/

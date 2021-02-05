@@ -54,7 +54,8 @@ testImage: "gcr.io/neo4j-helm/tester"
 
 # Whether or not to use APOC: https://neo4j.com/labs/apoc/
 # If you do not want APOC, make the array empty []
-plugins: "[\"apoc\"]"
+# plugins: "[\"apoc\"]"
+plugins: "[\"apoc\", \"bloom\", \"streams\", \"graphql\"]"
 
 # The default name of the Neo4j database to use.
 # See https://neo4j.com/docs/operations-manual/current/manage-databases/introduction/#manage-databases-default
@@ -267,7 +268,7 @@ readinessProbe:
   timeoutSeconds: 2
   periodSeconds: 10
   tcpSocket:
-    port: 7687 
+    port: 7687
 
 livenessProbe:
   initialDelaySeconds: 300
@@ -323,4 +324,5 @@ global:
   bucketAccess:
     secretName: "neo4j-gcp-credentials"
     key: key.json
+  gcpProject: vu-james-celli
   #gcpProject: define this in argocd
