@@ -8,6 +8,23 @@ This repository contains a Helm chart that starts Neo4j >= 4.0 Enterprise Editio
 
 ## Quick Start
 
+### Vutility Init Script
+
+#### INIT Script Commands
+
+```bash
+create-static-ips     # Using the GCP SDK creates static IPs for neo4j external access.
+remove-static-ips     # Using the GCP SDK deletes the static IPs that were created for neo4j external access.
+casual-cluster        # Runs the helm install command to install a Neo4j Casual Cluster into the Kubernetes cluster your cli is pointed to.
+standalone            # Runs the helm install command to install a Neo4j Standalone Instance into the Kubernetes cluster your cli is pointed to.
+elb-manifest-create   # Generates the GCP ELB Kubernetes Service Manifests with the static IPs that were generated from the create-static-ips command.
+apply-ext-manifests   # Applies the External Access Service Manifests into the Kubernetes cluster your cli is pointed to.
+remove-ext-manifests  # Removes the External Access Service Manifests from the Kubernetes cluster your cli is pointed to.
+cleanup               # Removes/Deletes the Kubernetes manifests that were generated AND Deletes the GCP Static IPs that were created.
+helm-remove           # Removes the Helm installation from the Kubernetes cluster your cli is pointed to.
+exit                  # Exits the program.
+```
+
 Check the [releases page](https://github.com/neo4j-contrib/neo4j-helm/releases) and copy the URL of the tgz package.   Make sure to note the correct version of Neo4j.
 
 ### Standalone (single server)
@@ -45,7 +62,7 @@ of Kubernetes
 
 ## Helm Testing
 
-This chart contains a standard set of [helm chart tests](https://helm.sh/docs/topics/chart_tests/), which 
+This chart contains a standard set of [helm chart tests](https://helm.sh/docs/topics/chart_tests/), which
 can be run after a deploy is ready, like this:
 
 ```
@@ -111,7 +128,7 @@ the helm chart.
 
 ### Building the Containers
 
-If you want to push your own docker containers, make sure that the registry in 
+If you want to push your own docker containers, make sure that the registry in
 the Makefile is set to somewhere you have permissions on.
 
 ```

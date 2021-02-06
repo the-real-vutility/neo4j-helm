@@ -38,7 +38,7 @@ authEnabled: true
 
 ## Specify password for neo4j user
 ## Defaults to a random 10-character alphanumeric string if not set and authEnabled is true
-# neo4jPassword:
+neo4jPassword: "SuperHappy123!"
 
 ## Specify secret name containing the password for neo4j user
 # existingPasswordSecret
