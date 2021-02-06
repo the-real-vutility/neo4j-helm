@@ -25,6 +25,11 @@ helm-remove           # Removes the Helm installation from the Kubernetes cluste
 exit                  # Exits the program.
 ```
 
+To execute the script run the following from the root level of this repo:
+```bash
+./init.sh [COMMAND]
+```
+
 Check the [releases page](https://github.com/neo4j-contrib/neo4j-helm/releases) and copy the URL of the tgz package.   Make sure to note the correct version of Neo4j.
 
 ### Standalone (single server)
