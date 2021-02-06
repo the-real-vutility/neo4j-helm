@@ -1,15 +1,29 @@
 #!/bin/bash
 
 
-export DEPLOYMENT="vu-test-neo"
-export GCP_PROJECT_ID="vu-james-celli"
-export REGION="us-central1"
+# export DEPLOYMENT=""
+# export GCP_PROJECT_ID=""
+# export REGION=""
 export IP0=""
 export IP1=""
 export IP2=""
 export ADDR0=$IP0
 export ADDR1=$IP1
 export ADDR2=$IP2
+
+
+
+#######################################################
+#####             SCRIPT CONFIGS                  #####
+#######################################################
+
+function request_env_vars() {
+  echo ""
+  read -r -p "What is the GCP Project?: " GCP_PROJECT_ID
+  read -r -p "What Region is your cluster in?: " REGION
+  read -r -p "What would you like your Helm chart to be named?: " DEPLOYMENT
+  echo ""
+}
 
 
 #######################################################
@@ -196,22 +210,39 @@ function test_shit() {
 }
 
 
+# Checks for ENV variables being set prior to running the script.
+if [[ -z "${GCP_PROJECT_ID}" ]] || [[ -z "${REGION}" ]] || [[ -z "${DEPLOYMENT}" ]]; then
+  request_env_vars
+fi
 
+echo ""
+echo "GCP Project: $GCP_PROJECT_ID"
+echo "Region: $REGION"
+echo "Deployment Name: $DEPLOYMENT"
+echo ""
+
+echo "CLUSTER INFO"
+echo ""
+
+kubectx
+echo ""
+echo ""
+kubens
 
 if [ $# -eq 0 ]; then
   while true; do
     echo ""
     read -r -p 'Please specify one of the following steps:
 
-    create-static-ips     # Using the GCP SDK creates static IPs for neo4j external access.
-    remove-static-ips     # Using the GCP SDK deletes the static IPs that were created for neo4j external access.
     casual-cluster        # Runs the helm install command to install a Neo4j Casual Cluster into the Kubernetes cluster your cli is pointed to.
     standalone            # Runs the helm install command to install a Neo4j Standalone Instance into the Kubernetes cluster your cli is pointed to.
+    create-static-ips     # Using the GCP SDK creates static IPs for neo4j external access.
     elb-manifest-create   # Generates the GCP ELB Kubernetes Service Manifests with the static IPs that were generated from the create-static-ips command.
     apply-ext-manifests   # Applies the External Access Service Manifests into the Kubernetes cluster your cli is pointed to.
     remove-ext-manifests  # Removes the External Access Service Manifests from the Kubernetes cluster your cli is pointed to.
-    cleanup               # Removes/Deletes the Kubernetes manifests that were generated AND Deletes the GCP Static IPs that were created.
     helm-remove           # Removes the Helm installation from the Kubernetes cluster your cli is pointed to.
+    remove-static-ips     # Using the GCP SDK deletes the static IPs that were created for neo4j external access.
+    cleanup               # Removes/Deletes the Kubernetes manifests that were generated AND Deletes the GCP Static IPs that were created.
     exit                  # Exits the program.
 
 Choice: ' CONTINUE
