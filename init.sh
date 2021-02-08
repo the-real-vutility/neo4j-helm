@@ -1,6 +1,9 @@
 #!/bin/bash
 
 
+export DEPLOYMENT="plugins-test"
+export GCP_PROJECT_ID="vu-james-celli"
+export REGION="us-central1"
 # export DEPLOYMENT=""
 # export GCP_PROJECT_ID=""
 # export REGION=""
@@ -84,9 +87,14 @@ function casual_cluster() {
   # Casual Cluster
   helm install ${DEPLOYMENT} . \
     --set acceptLicenseAgreement=yes \
-    --set neo4jPassword=mySecretPassword \
+    --set neo4jPassword="SuperHappy123!" \
     --set core.numberOfServers=3 \
-    --set readReplica.numberOfServers=0
+    --set readReplica.numberOfServers=0 \
+    -f values.yaml
+
+    echo ""
+    kubedecode ${DEPLOYMENT}-neo4j-secrets neo
+    echo ""
 }
 
 #######################################################
@@ -149,18 +157,18 @@ function elb_manifest_creation() {
     get_static_ips
   fi
   export CORE_ADDRESSES=($IP0 $IP1 $IP2)
-  export i=0
-  if [[ ! -d "manifests/external-access" ]]; then
-    mkdir manifests/external-access
-  fi
+  # export i=0
+  # if [[ ! -d "manifests/external-access" ]]; then
+  #   mkdir manifests/external-access
+  # fi
 
   for x in 0 1 2 ; do
      export IDX=$x
      export IP=${CORE_ADDRESSES[$x]}
      echo $DEPLOYMENT with IDX $IDX and IP $IP ;
-     # cat tools/external-exposure/load-balancer.yaml | envsubst | kubectl apply -f -
-     cat tools/external-exposure/load-balancer.yaml | envsubst > $(pwd)/manifests/external-access/extended-elb-${i}.yaml
-     ((i=i+1))
+     cat tools/external-exposure/load-balancer.yaml | envsubst | kubectl apply -f -
+     # cat tools/external-exposure/load-balancer.yaml | envsubst > $(pwd)/manifests/external-access/extended-elb-${i}.yaml
+     # ((i=i+1))
   done
   echo ""
 }
@@ -195,6 +203,7 @@ function helm_remove() {
   echo "Removing the Helm installation..."
   echo ""
   helm delete $DEPLOYMENT
+  kubectl delete pvc datadir-${DEPLOYMENT}-neo4j-core-0 datadir-${DEPLOYMENT}-neo4j-core-1 datadir-${DEPLOYMENT}-neo4j-core-2
 }
 
 function test_shit() {
@@ -204,9 +213,9 @@ function test_shit() {
   # export IP2=$(gcloud compute addresses describe neo4j-static-ip-2 --region=${REGION} --project=${GCP_PROJECT_ID} --format=json | jq -r '.address')
   # Connecting externally.
   export NEO4J_PASSWORD=$(kubectl get secrets ${DEPLOYMENT}-neo4j-secrets -o yaml | grep password | sed 's/.*: //' | base64 -d)
-  cypher-shell -a neo4j://$IP0:7687 -u neo4j -p "$NEO4J_PASSWORD"
-  # cypher-shell -a neo4j://$IP1:7687 -u neo4j -p "$NEO4J_PASSWORD"
-  # cypher-shell -a neo4j://$IP2:7687 -u neo4j -p "$NEO4J_PASSWORD"
+  cypher-shell -a bolt://$IP0:7687 -u neo4j -p "$NEO4J_PASSWORD"
+  # cypher-shell -a bolt://$IP1:7687 -u neo4j -p "$NEO4J_PASSWORD"
+  # cypher-shell -a bolt://$IP2:7687 -u neo4j -p "$NEO4J_PASSWORD"
 }
 
 
@@ -227,7 +236,30 @@ echo ""
 kubectx
 echo ""
 echo ""
+
+echo "NAMESPACE INFO"
+echo ""
 kubens
+
+echo ""
+echo ""
+read -r -p 'Are you sure you want to proceed with the installation? ' MOVIN_ON
+case $MOVIN_ON in
+  [Yy]* )
+  echo ""
+  echo "Starting the process..."
+  echo ""
+    ;;
+  [Nn]* )
+    echo ""
+    echo "Nothing happened..."
+    echo ""
+    exit
+    ;;
+  * )
+    echo "Please enter Y/y or N/n."
+    ;;
+esac
 
 if [ $# -eq 0 ]; then
   while true; do

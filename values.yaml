@@ -7,10 +7,10 @@ name: "neo4j"
 
 # Specs for the Neo4j docker image
 image: "neo4j"
-imageTag: "4.2.2-enterprise"
+imageTag: "4.2.3-enterprise"
 imagePullPolicy: "IfNotPresent"
 # imagePullSecret: registry-secret
-acceptLicenseAgreement: "no"
+acceptLicenseAgreement: "yes"
 podDisruptionBudget: {}
   # minAvailable: 2
   # maxUnavailable: 1
@@ -38,7 +38,7 @@ authEnabled: true
 
 ## Specify password for neo4j user
 ## Defaults to a random 10-character alphanumeric string if not set and authEnabled is true
-neo4jPassword: "SuperHappy123!"
+neo4jPassword: ""
 
 ## Specify secret name containing the password for neo4j user
 # existingPasswordSecret
@@ -55,7 +55,8 @@ testImage: "gcr.io/neo4j-helm/tester"
 # Whether or not to use APOC: https://neo4j.com/labs/apoc/
 # If you do not want APOC, make the array empty []
 # plugins: "[\"apoc\"]"
-plugins: "[\"apoc\", \"bloom\", \"streams\", \"graphql\"]"
+plugins: "[\"apoc\",\"bloom\"]"
+
 
 # The default name of the Neo4j database to use.
 # See https://neo4j.com/docs/operations-manual/current/manage-databases/introduction/#manage-databases-default
@@ -107,7 +108,25 @@ core:
   #  - name: my-sidecar
   #    image: nginx:latest
 
-  initContainers: []
+  # initContainers: []
+  initContainers:
+   ## init containers to run before the Neo4j core pod e.g. to install plugins
+   - name: init-plugins
+     image: "appropriate/curl:latest"
+     imagePullPolicy: "IfNotPresent"
+     volumeMounts:
+     - name: plugins
+       mountPath: /plugins
+     command:
+       - "/bin/sh"
+       - "-c"
+       - |
+         curl -L https://s3-eu-west-1.amazonaws.com/com.neo4j.graphalgorithms.dist/graph-data-science/neo4j-graph-data-science-1.4.1-standalone.jar -O
+         cp neo4j-graph-data-science-1.4.1-standalone.jar /plugins/
+         mv /plugins/neo4j-graph-data-science-1.4.1-standalone.jar /plugins/graph-data-science.jar
+         # curl -L https://github.com/neo4j-contrib/neo4j-graph-algorithms/releases/download/3.5.4.0/graph-algorithms-algo-3.5.4.0.jar -O
+         # cp graph-algorithms-algo-3.5.4.0.jar /plugins/
+         # mv /plugins/graph-algorithms-algo-3.5.4.0.jar /plugins/graph-algorithms.jar
   ## init containers to run before the Neo4j core pod e.g. to install plugins
   ## They can also be used to restore from last available backup, to ensure that newly joining
   ## core members have less TX history to catch up on before joining the cluster.
