@@ -116,6 +116,10 @@ spec:
         - containerPort: 3637
           name: tcp-jmx
         {{- end }}
+        # lifecycle:
+        #   postStart:
+        #     exec:
+        #       command: ["/bin/sh", "-c", "mkdir /var/lib/neo4j/licenses; cp /licenses/bloom.license /var/lib/neo4j/licenses; chown -R neo4j:neo4j /var/lib/neo4j/licenses"]
         volumeMounts:
         - name: init-script
           mountPath: /helm-init
