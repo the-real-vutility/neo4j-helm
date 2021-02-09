@@ -31,7 +31,11 @@ affinity: {}
 podLabels: {}
 
 ## Annotations to be added to pods
-podAnnotations: {}
+# podAnnotations: {}
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "2004"
+  prometheus.io/path: "/metrics"
 
 # Use password authentication
 authEnabled: true
@@ -108,25 +112,23 @@ core:
   #  - name: my-sidecar
   #    image: nginx:latest
 
-  # initContainers: []
-  initContainers:
+  initContainers: []
+  # initContainers:
    ## init containers to run before the Neo4j core pod e.g. to install plugins
-   - name: init-plugins
-     image: "appropriate/curl:latest"
-     imagePullPolicy: "IfNotPresent"
-     volumeMounts:
-     - name: plugins
-       mountPath: /plugins
-     command:
-       - "/bin/sh"
-       - "-c"
-       - |
-         curl -L https://s3-eu-west-1.amazonaws.com/com.neo4j.graphalgorithms.dist/graph-data-science/neo4j-graph-data-science-1.4.1-standalone.jar -O
-         cp neo4j-graph-data-science-1.4.1-standalone.jar /plugins/
-         mv /plugins/neo4j-graph-data-science-1.4.1-standalone.jar /plugins/graph-data-science.jar
-         # curl -L https://github.com/neo4j-contrib/neo4j-graph-algorithms/releases/download/3.5.4.0/graph-algorithms-algo-3.5.4.0.jar -O
-         # cp graph-algorithms-algo-3.5.4.0.jar /plugins/
-         # mv /plugins/graph-algorithms-algo-3.5.4.0.jar /plugins/graph-algorithms.jar
+   # - name: init-plugins
+   #   image: "appropriate/curl:latest"
+   #   imagePullPolicy: "IfNotPresent"
+   #   volumeMounts:
+   #   - name: plugins
+   #     mountPath: /plugins
+   #   command:
+   #     - "/bin/sh"
+   #     - "-c"
+   #     - |
+   #       curl -L https://s3-eu-west-1.amazonaws.com/com.neo4j.graphalgorithms.dist/graph-data-science/neo4j-graph-data-science-1.4.1-standalone.jar -O
+   #       cp neo4j-graph-data-science-1.4.1-standalone.jar /plugins/
+   #       mv /plugins/neo4j-graph-data-science-1.4.1-standalone.jar /plugins/graph-data-science.jar
+
   ## init containers to run before the Neo4j core pod e.g. to install plugins
   ## They can also be used to restore from last available backup, to ensure that newly joining
   ## core members have less TX history to catch up on before joining the cluster.
@@ -169,10 +171,18 @@ core:
   ## specify additional volumes to mount in the core container, this can be used
   ## to specify additional storage of material or to inject files from ConfigMaps
   ## into the running container
-  additionalVolumes: []
+  # additionalVolumes: []
+  additionalVolumes:
+    - name: bloom-license
+      secret:
+        secretName: bloom-license
 
   ## specify where the additional volumes are mounted in the core container
-  additionalVolumeMounts: []
+  # additionalVolumeMounts: []
+  additionalVolumeMounts:
+    - name: bloom-license
+      mountPath: "/licenses"
+      readOnly: true
   terminationGracePeriodSeconds: 300
 
   restore:
@@ -256,6 +266,9 @@ readReplica:
   ## specify where the additional volumes are mounted in the read replica
   ## container
   additionalVolumeMounts: []
+
+
+
   terminationGracePeriodSeconds: 300
 
   restore:
@@ -310,7 +323,7 @@ metrics:
     # metrics.prefix=Neo4j_1
   prometheus:
     ## Publish metrics for polling as Prometheus endpoint
-    enabled: false
+    enabled: true
     endpoint: localhost:2004
   csv:
     enabled: true

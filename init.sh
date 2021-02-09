@@ -2,9 +2,12 @@
 
 
 
-export DEPLOYMENT=""
-export GCP_PROJECT_ID=""
-export REGION=""
+export DEPLOYMENT="plugins-test"
+export GCP_PROJECT_ID="vu-james-celli"
+export REGION="us-central1"
+# export DEPLOYMENT=""
+# export GCP_PROJECT_ID=""
+# export REGION=""
 export IP0=""
 export IP1=""
 export IP2=""
@@ -85,7 +88,6 @@ function casual_cluster() {
   # Casual Cluster
   helm install ${DEPLOYMENT} . \
     --set acceptLicenseAgreement=yes \
-    --set neo4jPassword="SuperHappy123!" \
     --set core.numberOfServers=3 \
     --set readReplica.numberOfServers=0 \
     -f values.yaml
