@@ -2,12 +2,10 @@
 
 
 
-export DEPLOYMENT="neo4j"
-export GCP_PROJECT_ID="vu-james-celli"
-export REGION="us-central1"
-# export DEPLOYMENT=""
-# export GCP_PROJECT_ID=""
-# export REGION=""
+
+export DEPLOYMENT=""
+export GCP_PROJECT_ID=""
+export REGION=""
 export IP0=""
 export IP1=""
 export IP2=""
