@@ -368,4 +368,4 @@ global:
   bucketAccess:
     secretName: "neo4j-gcp-credentials"
     key: key.json
-  gcpProject: define this in argocd
+  # gcpProject: define this in argocd
