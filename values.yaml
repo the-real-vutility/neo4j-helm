@@ -339,8 +339,20 @@ dbms:
       max_size: ""
     pagecache:
       size: ""
+    transaction:
+      memory_allocation: ""
+      # maximum size of an individual transaction
+      max_size: ""
+      # maximum size of all transactions combined
+      global_max_size: ""
+
+
+# Create Role and RoleBinding
+rbac:
+  create: true
 
 serviceAccount:
+  create: true
   annotations: {}
   # If empty, name will be generated from the chart's fullname
   name:
