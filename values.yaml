@@ -324,7 +324,7 @@ metrics:
   prometheus:
     ## Publish metrics for polling as Prometheus endpoint
     enabled: true
-    endpoint: localhost:2004
+    endpoint: 0.0.0.0:2004
   csv:
     enabled: true
     interval: 3s
@@ -357,3 +357,4 @@ global:
     secretName: "neo4j-gcp-credentials"
     key: key.json
   #gcpProject: define this in argocd
+  gcpProject: vu-james-celli

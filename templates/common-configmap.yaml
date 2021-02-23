@@ -35,4 +35,5 @@ data:
   NEO4J_apoc_import_file_use__neo4j__config: "true"
   {{- end }}
   NEO4J_dbms_security_procedures_unrestricted: "apoc.*,bloom.*"
-  NEO4J_dbms_security_procedures_allowlist: "bloom.*"
+  NEO4J_dbms_security_procedures_allowlist: "apoc.*,bloom.*"
+  apoc.trigger.enabled: "true"

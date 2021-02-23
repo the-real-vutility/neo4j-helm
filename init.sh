@@ -2,7 +2,7 @@
 
 
 
-export DEPLOYMENT="plugins-test"
+export DEPLOYMENT="neo4j"
 export GCP_PROJECT_ID="vu-james-celli"
 export REGION="us-central1"
 # export DEPLOYMENT=""
