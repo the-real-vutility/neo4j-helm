@@ -151,7 +151,9 @@ core:
   ## Default: ClusterIP (headless)
   service:
     type: ClusterIP
-    annotations: {}
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      external-dns.alpha.kubernetes.io/hostname: bolt.v2dev.vutiliti.io
     labels: {}
     loadBalancerSourceRanges: []
 
